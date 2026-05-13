@@ -7,7 +7,7 @@ export default function Cursor() {
   useEffect(() => {
     const move = (e: MouseEvent) => {
       if (!ref.current) return;
-      ref.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      ref.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
     };
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
@@ -16,7 +16,7 @@ export default function Cursor() {
   return (
     <div
       ref={ref}
-      className="pointer-events-none fixed top-0 left-0 z-[9999] text-arcane text-4xl"
+      className="custom-cursor pointer-events-none fixed top-0 left-0 z-[9999] text-arcane text-4xl"
       style={{ willChange: "transform" }}
     >
       ✦

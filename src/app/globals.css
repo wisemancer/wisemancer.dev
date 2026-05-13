@@ -71,6 +71,11 @@ body {
   cursor: none;
 }
 
+/* Prevent child elements from showing system cursor on fine-pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  * { cursor: none !important; }
+}
+
 img { image-rendering: pixelated; }
 
 /* ── HUD ─────────────────────────────────────────────────────── */
@@ -360,6 +365,8 @@ textarea.field { resize: vertical; min-height: 140px; }
   padding: 40px 20px; text-align: center;
   background: linear-gradient(rgba(26,26,46,0.6), rgba(13,13,26,0.9)),
               url('/assets/wisemancer-world-map.png') center/cover fixed;
+  touch-action: manipulation;
+  overflow: hidden;
 }
 .title-portrait {
   width: 200px; height: auto;
@@ -385,6 +392,8 @@ textarea.field { resize: vertical; min-height: 140px; }
   font-family: var(--font-display); font-size: 13px; letter-spacing: 3px;
   color: var(--gold); animation: blink 0.9s steps(2,end) infinite;
   cursor: pointer; padding: 12px 20px; background: transparent; border: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(244, 208, 63, 0.25);
 }
 .press-start:hover { text-shadow: var(--glow-gold); }
 
@@ -427,9 +436,23 @@ textarea.field { resize: vertical; min-height: 140px; }
 
 /* ── MOBILE ──────────────────────────────────────────────────── */
 
-/* Restore system cursor on touch devices */
-@media (pointer: coarse) {
+/* Touch device fixes — (hover: none) catches touch devices that don't
+   report pointer: coarse (some Android + iOS configs) */
+@media (hover: none), (pointer: coarse) {
   body { cursor: auto; }
+  .custom-cursor { display: none; }
+  .title-wrap { background-attachment: scroll; }
+  .app        { background-attachment: scroll; }
+}
+
+/* Blink variant that never reaches opacity:0 — iOS won't fire touch
+   events on fully transparent elements */
+@keyframes blink-touch {
+  0%,50%      { opacity: 1; }
+  50.01%,100% { opacity: 0.05; }
+}
+@media (pointer: coarse) {
+  .press-start { animation-name: blink-touch; }
 }
 
 /* Hamburger button — hidden on desktop */
@@ -486,7 +509,8 @@ textarea.field { resize: vertical; min-height: 140px; }
   /* 2-col layouts → single column */
   .layout-2col { grid-template-columns: 1fr !important; }
 
-  /* Title screen */
+  /* Title screen — exact viewport height, no overflow to scroll */
+  .title-wrap   { height: 100dvh; min-height: unset; overflow: hidden; }
   .title-portrait { width: 120px; }
   .title-name     { font-size: 10px; letter-spacing: 2px; }
   .title-quest    { font-size: clamp(12px, 4vw, 20px); margin: 16px 0 6px; }
