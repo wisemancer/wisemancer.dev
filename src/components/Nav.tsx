@@ -18,10 +18,11 @@ const STAT_CARDS = [
 ];
 
 export default function Nav() {
-  const navRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState("home");
+  const navRef   = useRef<HTMLElement>(null);
+  const [active, setActive]   = useState("home");
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Publish actual nav height as --nav-h so hero + anchors can react
+  // Publish nav height as CSS variable so hero + anchors can react
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
@@ -31,7 +32,7 @@ export default function Nav() {
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [menuOpen]); // re-measure when menu opens/closes
 
   useEffect(() => {
     const ids = links.map((l) => l.href.slice(1));
@@ -43,21 +44,53 @@ export default function Nav() {
     return () => observer.disconnect();
   }, []);
 
+  const handleNavClick = () => setMenuOpen(false);
+
   return (
     <header ref={navRef} className="hud">
+
+      {/* ── desktop: top row ─────────────────────────────────────── */}
       <div className="hud-top">
-        <div className="hud-brand" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <div className="hud-brand" onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" }); setMenuOpen(false); }}>
           ⚔ WISEMANCER
         </div>
-        <nav className="hud-nav">
+
+        {/* desktop nav — hidden on mobile */}
+        <nav className="hud-nav hud-nav-desktop">
           {links.map(({ href, label }) => (
             <a key={href} href={href} className={active === href.slice(1) ? "active" : ""}>
               {label}
             </a>
           ))}
         </nav>
+
+        {/* hamburger — visible only on mobile */}
+        <button
+          className="hud-burger"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? "✕" : "☰"}
+        </button>
       </div>
 
+      {/* ── mobile dropdown nav ───────────────────────────────────── */}
+      {menuOpen && (
+        <nav className="hud-mobile-nav">
+          {links.map(({ href, label }) => (
+            <a
+              key={href}
+              href={href}
+              className={active === href.slice(1) ? "active" : ""}
+              onClick={handleNavClick}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+      )}
+
+      {/* ── grade cards — desktop only ────────────────────────────── */}
       <div className="hud-cards">
         {STAT_CARDS.map((s) => (
           <div key={s.lbl} className="hud-card">

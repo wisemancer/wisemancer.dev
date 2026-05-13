@@ -432,15 +432,43 @@ textarea.field { resize: vertical; min-height: 140px; }
   body { cursor: auto; }
 }
 
+/* Hamburger button — hidden on desktop */
+.hud-burger { display: none; }
+.hud-nav-desktop { display: flex; }
+.hud-mobile-nav  { display: none; }
+
 @media (max-width: 768px) {
-  /* Nav: single-row, hide stat cards and quip */
-  .hud-cards { display: none; }
-  .hud-quip  { display: none; }
-  .hud-top   { gap: 8px; padding: 8px 12px; }
-  .hud-brand { font-size: 10px; }
-  .hud-nav   { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .hud-nav::-webkit-scrollbar { display: none; }
-  .hud-nav a { padding: 6px 8px; font-size: 8px; white-space: nowrap; }
+  /* Nav: slim single row + hamburger dropdown */
+  .hud-cards        { display: none; }
+  .hud-quip         { display: none; }
+  .hud-top          { padding: 8px 14px; gap: 0; }
+  .hud-brand        { font-size: 9px; letter-spacing: 1px; }
+  .hud-nav-desktop  { display: none; }
+
+  .hud-burger {
+    display: flex; align-items: center; justify-content: center;
+    margin-left: auto;
+    background: none; border: 2px solid var(--primary-d); color: var(--primary-l);
+    font-size: 16px; width: 34px; height: 34px; cursor: pointer;
+    transition: border-color 80ms, color 80ms;
+  }
+  .hud-burger:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hud-mobile-nav {
+    display: flex; flex-direction: column;
+    border-top: 2px solid var(--primary-d);
+    background: var(--surface-1);
+  }
+  .hud-mobile-nav a {
+    font-family: var(--font-display); font-size: 9px;
+    letter-spacing: 2px; color: var(--text-dim);
+    padding: 12px 16px; text-decoration: none; text-transform: uppercase;
+    border-bottom: 1px solid var(--primary-d);
+    transition: color 80ms, background 80ms;
+  }
+  .hud-mobile-nav a:last-child { border-bottom: none; }
+  .hud-mobile-nav a:hover  { color: var(--primary-l); background: var(--surface-2); }
+  .hud-mobile-nav a.active { color: var(--gold); }
 
   /* Hero: stack map on top, content below */
   .hero-section   { flex-direction: column; }
