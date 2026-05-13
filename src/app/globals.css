@@ -413,3 +413,68 @@ textarea.field { resize: vertical; min-height: 140px; }
   animation: sprite-walk 0.6s steps(4) infinite;
   image-rendering: pixelated;
 }
+
+/* ── HERO LAYOUT (desktop default) ──────────────────────────── */
+.hero-section {
+  height: calc(100vh - var(--nav-h, 0px));
+  flex-direction: row;
+}
+.hero-map {
+  height: 100%;
+  width: calc(0.87 * (100vh - var(--nav-h, 0px)));
+}
+.hero-content { padding: 24px 40px; }
+
+/* ── MOBILE ──────────────────────────────────────────────────── */
+
+/* Restore system cursor on touch devices */
+@media (pointer: coarse) {
+  body { cursor: auto; }
+}
+
+@media (max-width: 768px) {
+  /* Nav: single-row, hide stat cards and quip */
+  .hud-cards { display: none; }
+  .hud-quip  { display: none; }
+  .hud-top   { gap: 8px; padding: 8px 12px; }
+  .hud-brand { font-size: 10px; }
+  .hud-nav   { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .hud-nav::-webkit-scrollbar { display: none; }
+  .hud-nav a { padding: 6px 8px; font-size: 8px; white-space: nowrap; }
+
+  /* Hero: stack map on top, content below */
+  .hero-section   { flex-direction: column; }
+  .hero-map       { width: 100% !important; height: 42vmax; }
+  .hero-map img   { object-fit: cover; object-position: center 30%; }
+  .hero-content   { padding: 14px 16px; justify-content: flex-start; }
+  .hero-content > div { max-width: 100% !important; }
+
+  /* Sprite: hide on mobile map (too small and distracting) */
+  .sprite-walk { display: none; }
+
+  /* Section screens */
+  .screen { padding: 20px 16px 40px; }
+
+  /* 2-col layouts → single column */
+  .layout-2col { grid-template-columns: 1fr !important; }
+
+  /* Title screen */
+  .title-portrait { width: 120px; }
+  .title-name     { font-size: 10px; letter-spacing: 2px; }
+  .title-quest    { font-size: clamp(12px, 4vw, 20px); margin: 16px 0 6px; }
+  .title-sub      { font-size: 9px; margin-bottom: 24px; }
+  .press-start    { font-size: 10px; }
+
+  /* Typography */
+  .h-quest  { font-size: clamp(13px, 4vw, 22px); }
+  .flavor   { font-size: 18px; }
+
+  /* Buttons */
+  .btn { font-size: 9px; padding: 10px 14px; }
+
+  /* Chips */
+  .chip { font-size: 7px; padding: 4px 7px; }
+
+  /* Inventory slots */
+  .inv { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+}

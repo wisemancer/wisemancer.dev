@@ -28,6 +28,7 @@ export default function Hero() {
   const wheelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mtgClicks = useRef(0);
   const mtgTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   const walkTo = useCallback(
     (targetTop: number, targetLeft: number, onArrival?: () => void) => {
@@ -102,6 +103,22 @@ export default function Hero() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [activeChapter, goToChapter]);
 
+  // Touch swipe — forward only, same rule as wheel
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const onTouchStart = (e: TouchEvent) => { touchStartY.current = e.touches[0].clientY; };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (touchStartY.current === null) return;
+      const dy = touchStartY.current - e.changedTouches[0].clientY;
+      if (dy > 40) goToChapter(activeChapter + 1); // swipe up → next
+      touchStartY.current = null;
+    };
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => { el.removeEventListener("touchstart", onTouchStart); el.removeEventListener("touchend", onTouchEnd); };
+  }, [activeChapter, goToChapter]);
+
   const handleShrineClick = () => {
     mtgClicks.current += 1;
     if (mtgClicks.current >= 3) {
@@ -121,17 +138,10 @@ export default function Hero() {
     <section
       id="home"
       ref={heroRef}
-      className="relative flex overflow-hidden"
-      style={{ height: "calc(100vh - var(--nav-h, 0px))" }}
+      className="hero-section relative flex overflow-hidden"
     >
-      {/* ── LEFT: map ────────────────────────────────────────────── */}
-      <div
-        className="relative flex-shrink-0"
-        style={{
-          height: "100%",
-          width: "calc(0.87 * (100vh - var(--nav-h, 0px)))",
-        }}
-      >
+      {/* ── LEFT / TOP (mobile): map ─────────────────────────────── */}
+      <div className="hero-map relative flex-shrink-0">
         <img
           src="/assets/wisemancer-world-map.png"
           alt="Quest Map"
@@ -182,11 +192,8 @@ export default function Hero() {
         />
       </div>
 
-      {/* ── RIGHT: chapter content — centered ────────────────────── */}
-      <div
-        className="flex flex-1 flex-col items-center justify-center min-w-0"
-        style={{ padding: "24px 40px", overflowY: "auto" }}
-      >
+      {/* ── RIGHT / BOTTOM (mobile): chapter content ─────────────── */}
+      <div className="hero-content flex flex-1 flex-col items-center justify-center min-w-0 overflow-y-auto">
         <div style={{ width: "100%", maxWidth: 560 }}>
           {/* Progress bar */}
           <div
