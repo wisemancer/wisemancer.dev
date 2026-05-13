@@ -414,6 +414,10 @@ textarea.field { resize: vertical; min-height: 140px; }
   from { background-position: 0 0; }
   to   { background-position: -230px 0; }
 }
+@keyframes sprite-walk-mobile {
+  from { background-position: 0 0; }
+  to   { background-position: -160px 0; }
+}
 .sprite-walk {
   background-image: url('/assets/wisemancer-walk-magia-row.png?v=2');
   background-repeat: no-repeat;
@@ -496,12 +500,16 @@ textarea.field { resize: vertical; min-height: 140px; }
   /* Hero: stack map on top, content below */
   .hero-section   { flex-direction: column; }
   .hero-map       { width: 100% !important; height: 42vmax; }
-  .hero-map img   { object-fit: cover; object-position: center 30%; }
+  .hero-map img   { object-fit: cover; object-position: center top; }
   .hero-content   { padding: 14px 16px; justify-content: flex-start; }
   .hero-content > div { max-width: 100% !important; }
 
-  /* Sprite: hide on mobile map (too small and distracting) */
-  .sprite-walk { display: none; }
+  /* Sprite: scaled down — keyframe must match new sheet width (4 × 40px = 160px) */
+  .sprite-walk {
+    width: 40px; height: 106px;
+    background-size: 160px 106px;
+    animation-name: sprite-walk-mobile;
+  }
 
   /* Section screens */
   .screen { padding: 20px 16px 40px; }
