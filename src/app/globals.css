@@ -1,0 +1,415 @@
+@import "tailwindcss";
+
+/* ── DESIGN SYSTEM TOKENS (from Claude Design) ─────────────── */
+@theme {
+  /* Core brand */
+  --color-robe:      #1A1A2E;
+  --color-arcane:    #9B5DE5;
+  --color-gold:      #F4D03F;
+  --color-danger:    #CC2200;
+  --color-forest:    #2D6A4F;
+  --color-mist:      #E0E0F0;
+  --color-shadow:    #0D0D1A;
+
+  /* Extended palette */
+  --color-surface1:  #232342;
+  --color-surface2:  #2D2D52;
+  --color-arcane-d:  #6B3FA0;
+  --color-arcane-l:  #C792EA;
+  --color-gold-d:    #C9A82B;
+  --color-mist-d:    #9A9AB8;
+  --color-rune:      #7D5FB3;
+
+  /* Fonts */
+  --font-pixel: var(--font-press-start);
+  --font-vt:    var(--font-vt323);
+}
+
+/* ── CSS VARIABLES (for non-Tailwind component styles) ──────── */
+:root {
+  --bg:        #1A1A2E;
+  --primary:   #9B5DE5;
+  --gold:      #F4D03F;
+  --danger:    #CC2200;
+  --forest:    #2D6A4F;
+  --text:      #E0E0F0;
+  --shadow:    #0D0D1A;
+  --bg-2:      #232342;
+  --bg-3:      #2D2D52;
+  --primary-d: #6B3FA0;
+  --primary-l: #C792EA;
+  --gold-d:    #C9A82B;
+  --text-dim:  #9A9AB8;
+  --text-rune: #7D5FB3;
+  --surface-0: var(--bg);
+  --surface-1: var(--bg-2);
+  --surface-2: var(--bg-3);
+  --surface-deep: var(--shadow);
+  --font-display: 'Press Start 2P', 'Courier New', monospace;
+  --font-body:    'VT323', 'Courier New', monospace;
+  --border-color: var(--primary-d);
+  --shadow-pixel: 4px 4px 0 var(--shadow);
+  --shadow-pixel-sm: 2px 2px 0 var(--shadow);
+  --glow-purple: 0 0 12px rgba(155,93,229,0.7), 0 0 24px rgba(155,93,229,0.35);
+  --glow-gold:   0 0 10px rgba(244,208,63,0.65), 0 0 20px rgba(244,208,63,0.3);
+}
+
+/* ── GLOBAL RESET ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+/* Offset anchor jumps so sections clear the sticky nav */
+section[id] { scroll-margin-top: var(--nav-h, 0px); }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  cursor: none;
+}
+
+img { image-rendering: pixelated; }
+
+/* ── HUD ─────────────────────────────────────────────────────── */
+.hud {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--surface-1);
+  border-bottom: 4px solid var(--primary-d);
+  box-shadow: 0 4px 0 var(--shadow);
+}
+.hud-top {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 10px clamp(16px, 3vw, 32px);
+  border-bottom: 2px solid var(--primary-d);
+}
+.hud-brand {
+  font-family: var(--font-display); font-size: 12px;
+  letter-spacing: 2px; color: var(--gold);
+  text-shadow: 2px 2px 0 var(--shadow);
+  cursor: pointer;
+}
+.hud-nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.hud-nav a {
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 2px; color: var(--text-dim);
+  padding: 8px 12px; cursor: pointer;
+  border: none; background: transparent;
+  text-transform: uppercase; transition: color 80ms;
+  text-decoration: none;
+}
+.hud-nav a:hover { color: var(--primary-l); text-shadow: 0 0 8px rgba(155,93,229,.7); }
+.hud-nav a.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+
+/* grade-card stat row */
+.hud-cards { display: grid; grid-template-columns: repeat(4, 1fr); }
+.hud-card {
+  padding: 8px 12px 10px;
+  text-align: center;
+  border-right: 2px solid var(--primary-d);
+}
+.hud-card:last-child { border-right: none; }
+.card-lbl {
+  font-family: var(--font-display); font-size: 7px;
+  letter-spacing: 2px; color: var(--primary-l);
+  margin-bottom: 4px; text-transform: uppercase;
+}
+.card-grade {
+  font-family: var(--font-display); font-size: 14px;
+  color: var(--text); line-height: 1;
+  text-shadow: 2px 2px 0 var(--shadow);
+}
+.card-val {
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 1px; margin-top: 4px; line-height: 1;
+  text-shadow: 1px 1px 0 var(--shadow);
+}
+.hud-quip {
+  text-align: center; padding: 5px 12px;
+  font-family: var(--font-body); font-size: 15px;
+  color: var(--text-dim); font-style: italic;
+  border-top: 2px dotted var(--primary-d);
+}
+
+/* kept for legacy use in other components */
+.hud-stats { display: flex; gap: 8px; align-items: center; }
+.pill {
+  font-family: var(--font-display); font-size: 9px;
+  letter-spacing: 1px; padding: 5px 8px;
+  border: 2px solid var(--shadow); background: var(--shadow); color: var(--text);
+}
+.pill.hp  { border-color: var(--danger); color: #F4B0A0; }
+.pill.mp  { border-color: var(--forest); color: #7DC4A3; }
+.pill.lvl { background: var(--gold); color: var(--shadow); border-color: var(--shadow); }
+
+/* ── PRIMITIVES ──────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-display); font-size: 11px;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 12px 20px;
+  background: var(--primary); color: var(--text);
+  border: 2px solid var(--shadow);
+  box-shadow: var(--shadow-pixel);
+  cursor: pointer;
+  transition: box-shadow 80ms, transform 80ms, background 80ms;
+}
+.btn:hover { background: #B17BEC; box-shadow: var(--shadow-pixel), var(--glow-purple); }
+.btn:active { transform: translate(2px,2px); box-shadow: var(--shadow-pixel-sm); }
+.btn.ghost { background: transparent; border: 2px solid var(--primary); color: var(--primary-l); }
+.btn.gold  { background: var(--gold); color: var(--shadow); }
+.btn.gold:hover { box-shadow: var(--shadow-pixel), var(--glow-gold); }
+
+.chip {
+  font-family: var(--font-display); font-size: 9px;
+  letter-spacing: 1.5px; padding: 5px 9px;
+  border: 2px solid var(--primary-d); background: var(--surface-1); color: var(--text);
+  display: inline-block;
+}
+.chip.gold   { border-color: var(--gold); color: var(--gold); }
+.chip.green  { border-color: var(--forest); color: #7DC4A3; }
+.chip.danger { border-color: var(--danger); color: #F4B0A0; }
+
+.field {
+  width: 100%; box-sizing: border-box;
+  background: var(--shadow); border: 2px solid var(--primary-d);
+  color: var(--text); font-family: var(--font-body);
+  font-size: 22px; padding: 8px 12px; outline: none;
+}
+.field:focus { border-color: var(--gold); outline: 2px solid var(--gold); outline-offset: 2px; }
+textarea.field { resize: vertical; min-height: 140px; }
+
+.label {
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 2px; color: var(--text-dim);
+  display: block; margin-bottom: 6px; text-transform: uppercase;
+}
+
+/* ── PANELS / CARDS ──────────────────────────────────────────── */
+.panel {
+  background: var(--surface-1);
+  border: 2px solid var(--primary-d);
+  box-shadow: var(--shadow-pixel);
+  padding: 18px 20px;
+}
+.panel.thick { border-width: 4px; padding: 22px 24px; }
+
+.tome {
+  background: var(--surface-1);
+  border: 2px solid var(--primary-d);
+  box-shadow: var(--shadow-pixel);
+  padding: 16px; cursor: pointer;
+  transition: box-shadow 120ms, transform 80ms;
+}
+.tome:hover { box-shadow: var(--shadow-pixel), var(--glow-purple); }
+.tome:active { transform: translate(2px,2px); box-shadow: var(--shadow-pixel-sm); }
+.tome-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.tome-head img { width: 36px; height: 36px; }
+.tome-tag { font-family: var(--font-display); font-size: 9px; letter-spacing: 2px; color: var(--gold); }
+.tome-title { font-family: var(--font-display); font-size: 12px; color: var(--text); line-height: 1.5; margin: 8px 0; }
+.tome-body { font-family: var(--font-body); font-size: 18px; color: var(--text-dim); font-style: italic; line-height: 1.15; margin-bottom: 12px; }
+.tome-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── DIALOG BOX ──────────────────────────────────────────────── */
+.dialog {
+  position: relative;
+  background: var(--surface-1);
+  border: 4px solid var(--primary-d);
+  box-shadow: 6px 6px 0 var(--shadow);
+  padding: 16px 18px 18px 110px;
+  min-height: 96px;
+  margin-left: 28px;
+}
+.dialog-portrait {
+  position: absolute; left: -28px; top: -20px;
+  width: 100px; height: 100px;
+  border: 2px solid var(--gold);
+  background: var(--shadow);
+  box-shadow: var(--shadow-pixel);
+  object-fit: cover; object-position: top;
+}
+.dialog-name {
+  display: inline-block;
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 2px; color: var(--shadow);
+  background: var(--gold); padding: 4px 10px;
+  border: 2px solid var(--shadow); margin-bottom: 8px;
+}
+.dialog-body { font-family: var(--font-body); font-size: 20px; color: var(--text); line-height: 1.15; }
+.dialog-arrow { color: var(--primary-l); animation: blink 0.6s steps(2,end) infinite; }
+
+/* ── STAT BAR ────────────────────────────────────────────────── */
+.statbar { margin-bottom: 12px; }
+.statbar-row { display: flex; justify-content: space-between; margin-bottom: 4px; align-items: baseline; }
+.statbar-lbl { font-family: var(--font-display); font-size: 10px; letter-spacing: 2px; }
+.statbar-val { font-family: var(--font-body); font-size: 18px; color: var(--text); }
+.statbar-track { height: 16px; background: var(--shadow); border: 2px solid var(--shadow); padding: 1px; display: flex; gap: 1px; }
+.statbar-chunk { flex: 1; background: var(--bg-3); }
+.statbar-chunk.on.hp     { background: var(--danger); }
+.statbar-chunk.on.mp     { background: var(--forest); }
+.statbar-chunk.on.xp     { background: var(--gold); }
+.statbar-chunk.on.purple { background: var(--primary); }
+
+/* ── INVENTORY / SPELLBOOK ───────────────────────────────────── */
+.inv {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+}
+.slot {
+  aspect-ratio: 1/1;
+  background: var(--shadow);
+  border: 2px solid var(--primary-d);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; cursor: pointer;
+  transition: box-shadow 80ms;
+}
+.slot:hover { box-shadow: 0 0 12px rgba(155,93,229,.7); }
+.slot img { width: 65%; height: 65%; }
+.slot.equipped { border-color: var(--gold); box-shadow: 0 0 10px rgba(244,208,63,.55); }
+.slot .qty {
+  position: absolute; right: 3px; bottom: 0;
+  font-family: var(--font-display); font-size: 7px; color: var(--text);
+  text-shadow: 1px 1px 0 var(--shadow);
+}
+.slot-lbl {
+  font-family: var(--font-display); font-size: 7px;
+  letter-spacing: 1px; text-align: center;
+  color: var(--text-dim); margin-top: 4px;
+  text-transform: uppercase; line-height: 1.4;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────────── */
+.screen {
+  flex: 1;
+  padding: 32px clamp(20px, 4vw, 56px) 56px;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(rgba(26,26,46,0.85), rgba(26,26,46,0.92)),
+    url('/assets/wisemancer-workshop-bg.png') center/cover fixed;
+}
+
+.layout-2col {
+  display: grid; grid-template-columns: 1fr 280px; gap: 24px;
+}
+@media (max-width: 880px) {
+  .layout-2col { grid-template-columns: 1fr; }
+}
+.tomes-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px;
+}
+.companion {
+  background: var(--surface-1);
+  border: 2px solid var(--primary-d);
+  box-shadow: var(--shadow-pixel);
+  padding: 14px; text-align: center;
+}
+.companion img { width: 100%; height: auto; border: 2px solid var(--shadow); display: block; }
+.companion .plate {
+  display: inline-block; margin: 10px 0 6px;
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 2px; color: var(--shadow);
+  background: var(--gold); padding: 4px 12px; border: 2px solid var(--shadow);
+}
+
+/* ── HEADING FLOURISHES ──────────────────────────────────────── */
+.h-quest {
+  font-family: var(--font-display); font-size: clamp(18px, 3vw, 28px);
+  color: var(--gold); text-shadow: 3px 3px 0 var(--shadow);
+  letter-spacing: 1px; margin: 6px 0; line-height: 1.5;
+}
+.h-chapter {
+  font-family: var(--font-display); font-size: 11px;
+  color: var(--primary); text-shadow: 2px 2px 0 var(--shadow);
+  letter-spacing: 1px; margin-bottom: 8px;
+}
+.flavor {
+  font-family: var(--font-body); font-size: 22px;
+  color: var(--text-dim); font-style: italic; line-height: 1.2;
+}
+.section { margin-top: 28px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.back-link {
+  font-family: var(--font-display); font-size: 10px; letter-spacing: 2px;
+  color: var(--primary-l); cursor: pointer; background: none; border: none;
+  padding: 8px 0; text-transform: uppercase;
+}
+.back-link:hover { color: var(--gold); }
+.kv-row { display: flex; gap: 14px; padding: 8px 0; border-bottom: 2px dotted var(--primary-d); }
+.kv-row:last-child { border-bottom: none; }
+.kv-key { font-family: var(--font-display); font-size: 9px; letter-spacing: 2px; color: var(--gold); width: 130px; flex-shrink: 0; }
+.kv-val { font-family: var(--font-body); font-size: 20px; color: var(--text); }
+
+/* ── TITLE SCREEN ────────────────────────────────────────────── */
+.title-wrap {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 20px; text-align: center;
+  background: linear-gradient(rgba(26,26,46,0.6), rgba(13,13,26,0.9)),
+              url('/assets/wisemancer-world-map.png') center/cover fixed;
+}
+.title-portrait {
+  width: 200px; height: auto;
+  border: 4px solid var(--gold);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+.title-name {
+  display: inline-block;
+  font-family: var(--font-display); font-size: 14px; letter-spacing: 3px;
+  color: var(--shadow); background: var(--gold);
+  padding: 6px 16px; border: 2px solid var(--shadow); margin-top: 16px;
+}
+.title-quest {
+  font-family: var(--font-display); font-size: clamp(16px, 3vw, 28px);
+  color: var(--text); text-shadow: 3px 3px 0 var(--shadow);
+  letter-spacing: 2px; line-height: 1.6; margin: 28px 0 8px;
+}
+.title-sub {
+  font-family: var(--font-display); font-size: 11px; letter-spacing: 3px;
+  color: var(--primary-l); margin-bottom: 32px;
+}
+.press-start {
+  font-family: var(--font-display); font-size: 13px; letter-spacing: 3px;
+  color: var(--gold); animation: blink 0.9s steps(2,end) infinite;
+  cursor: pointer; padding: 12px 20px; background: transparent; border: none;
+}
+.press-start:hover { text-shadow: var(--glow-gold); }
+
+/* ── ANIMATIONS ──────────────────────────────────────────────── */
+@keyframes blink {
+  0%,50%      { opacity: 1; }
+  50.01%,100% { opacity: 0; }
+}
+
+@keyframes marker-pulse {
+  0%,100% { box-shadow: 0 0 6px 2px #9B5DE5; opacity: 1; }
+  50%     { box-shadow: 0 0 14px 6px #9B5DE5; opacity: 0.7; }
+}
+.marker-pulse { animation: marker-pulse 1.8s ease-in-out infinite; }
+
+/* ── SPRITE WALK ─────────────────────────────────────────────── */
+@keyframes sprite-walk {
+  from { background-position: 0 0; }
+  to   { background-position: -230px 0; }
+}
+.sprite-walk {
+  background-image: url('/assets/wisemancer-walk-magia-row.png?v=2');
+  background-repeat: no-repeat;
+  width: 58px; height: 154px;
+  background-size: 230px 154px;
+  animation: sprite-walk 0.6s steps(4) infinite;
+  image-rendering: pixelated;
+}
