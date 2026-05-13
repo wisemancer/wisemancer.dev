@@ -77,7 +77,7 @@ export default function Spellbook() {
               {selected.name}
             </div>
             <StatBar kind="purple" label="MASTERY" value={TIER_LVL[selected.tier]} max={10} total={10} />
-            <div style={{ fontFamily: "var(--font-body)", fontSize: 18, color: "var(--primary)", marginTop: 6, fontFamily: "var(--font-display)", fontSize: 9, letterSpacing: 1 }}>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: 9, color: "var(--primary)", marginTop: 6, letterSpacing: 1 }}>
               {selected.tier}
             </div>
             <div style={{ fontFamily: "var(--font-body)", fontSize: 18, color: "var(--text-dim)", fontStyle: "italic", lineHeight: 1.15, marginTop: 8 }}>
